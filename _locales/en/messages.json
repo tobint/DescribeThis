@@ -1,0 +1,14 @@
+{
+	"extensionName": {
+		"description": "The name of the extension",
+		"message": "Sample Name"
+	},
+	"extensionDescription": {
+		"description": "The description of the extension",
+		"message": "Sample Description"
+	},
+	"browserActionTitle": {
+		"description": "The title of the browser action button",
+		"message": "Sample Button Title"
+	}
+}
