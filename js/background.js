@@ -1,49 +1,96 @@
-browser.browserAction.onClicked.addListener(function () {
-
-})
-
-
-function processImage(sourceImageUrl) {
-    // **********************************************
-    // *** Update or verify the following values. ***
-    // **********************************************
-
-    // Replace the subscriptionKey string value with your valid subscription key.
-    var subscriptionKey = "";
-
-    // Replace or verify the region.
-    //
-    // You must use the same region in your REST API call as you used to obtain your subscription keys.
-    // For example, if you obtained your subscription keys from the westus region, replace
-    // "westcentralus" in the URI below with "westus".
-    //
-    // NOTE: Free trial subscription keys are generated in the westcentralus region, so if you are using
-    // a free trial subscription key, you should not need to change this region.
-    var uriBase = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/analyze?";
-
-
+function callCognitiveService(apiUrl, subscriptionKey, sourceImageUrl, callback) {
     var returnValue = "";
-    
     var xhr = new XMLHttpRequest();
-    xhr.addEventListener("readystatechange", function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var resp = JSON.parse(this.response);
-            returnValue = resp.description.captions[0].text;
-        }
-    });
+    xhr.addEventListener("readystatechange",
+        function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                returnValue = callback(this.response);
+            }
+        }, false);
     try {
-        var url = uriBase + "visualFeatures=Categories%2CDescription&language=en";
-        xhr.open('POST', url, false);
+        xhr.open('POST', apiUrl, false);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
         xhr.send('{"url": ' + '"' + sourceImageUrl + '"}');
-    } catch(err) {
-        returnValue = err;
+    } catch (err) {
+        returnValue = "DescribeThis was unable to call Microsoft Cognitive Services API: " + err;
     } 
-    while (returnValue == "") { sleep(100); }
+
     return returnValue;
+}
+
+function callCognitiveServiceAnalyze(sourceImageUrl) {
+    // Replace the subscriptionKey string value with your valid subscription key.
+    var subscriptionKey = ""; // TODO: Add to options page
+    var uriBase = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/analyze?";
+    var url = uriBase + "visualFeatures=Categories%2CDescription&language=en"; // TODO: Add to options page
+
+
+    return callCognitiveService(url, subscriptionKey, sourceImageUrl,
+        function (response) {
+            return JSON.parse(response);
+        }
+    );
+}
+
+function callCognitiveServiceEmotion(sourceImageUrl) {
+    var subscriptionKey = "";
+    var uriBase = "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?";
+    var url = uriBase;
+
+    return callCognitiveService(url, subscriptionKey, sourceImageUrl,
+        function (response) {
+            return JSON.parse(response);
+        }
+    );
+}
+
+function processImage(sourceImageUrl) {
+    var returnValue = "";
+
+    // Call Analyze
+    var analyze = callCognitiveServiceAnalyze(sourceImageUrl);
+
+    returnValue = analyze.description.captions[0].text +
+        " (" + (parseInt(analyze.description.captions[0].confidence * 1000) / 10) + "%)";
+
+    if (hasPersonTag(analyze.description.tags)) {
+
+        // If it's a person, get their emotion
+        var people = callCognitiveServiceEmotion(sourceImageUrl);
+        var peopleLength = people.length;
+        if (peopleLength > 0) {
+            for (var p = 0; p < peopleLength; p++) {
+                var scores = people[p].scores;
+                var items = Object.keys(scores).map(function (key) {
+                    return [key, scores[key]];
+                });
+                items.sort(function (first, second) {
+                    return second[1] - first[1];
+                });
+                var emotions = (items.slice(0, 1));
+                returnValue += "\r\n" + emotions[0][0];
+
+            }
+        }
+    }
+
+    return returnValue;
+
 };
 
+function hasPersonTag(tags) {
+    var hasPerson = false;
+
+    var tagsLength = tags.length;
+    for (var i = 0; i < tagsLength; i++) {
+        if (tags[i] == "person") {
+            hasPerson = true;
+            break;
+        }
+    }
+    return hasPerson;
+}
 
 browser.contextMenus.create({
     id: "describe-this",
