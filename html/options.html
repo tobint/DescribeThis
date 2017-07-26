@@ -1,18 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-		<title>Describe This Page</title>
+		<title>Describe This! Options</title>
+        <link rel="stylesheet" type="text/css" href="../css/options.css">
     </head>
-    <body>
-            <input type="text" id="subscriptionKey" value="" size="50" />
+<body>
+    <div class="form-style-10">
+        <h1>DescribeThis! Browser Extension<span>Configure DescribeThis!</span></h1>
 
+        <div class="section"><span>1</span>Cognitive Services</div>
+        <div class="form-style-10-instructions">Cognitive services requires API keys that are region dependent. Get your keys and regions <a href="https://azure.microsoft.com/en-us/try/cognitive-services/" target="_blank">here</a>. </div>
+        <div class="inner-wrap">
+            <label>Vision API Region 
+                <select id="visionApiRegion">
+                    <option value="eastus2">East US 2</option>
+                    <option value="westcentralus" selected>West Central US</option>
+                    <option value="westus">West US</option>
+                    <option value="westeurope">Western Europe</option>
+                    <option value="southeastasia">Southeast Asia</option>
+                </select>
+            </label>
+            <label>Vision API Key 
+                <input type="text" id="visionApiKey" />
+            </label>
+        </div>
+        <div class="inner-wrap">
+            <label>Emotion API Region 
+                <select id="emotionApiRegion">
+                    <option value="eastus2">East US 2</option>
+                    <option value="westcentralus">West Central US</option>
+                    <option value="westus" selected>West US</option>
+                    <option value="westeurope">Western Europe</option>
+                    <option value="southeastasia">Southeast Asia</option>
+                </select>
+            </label>
+            <label>Emotion API Key 
+                <input type="text" id="emotionApiKey" />
+            </label>
+        </div>
 
-        <script type="text/javascript">
-            document.addEventListener("load", function() {
-                document.getElementById("subscriptionKey").addEventListener("change", function () {
-                    alert("Hello World");
-                });
-            });
-        </script>
-    </body>
+        <div id="displayBox">
+            <div id="userInformation"></div>
+        </div>
+        <div class="button-section">
+            <input type="submit" id="saveOptions" name="Save" value="Save" />
+        </div>
+        <div class="clear-fix"></div>
+
+    </div>
+
+            <script type="text/javascript" src="../js/options.js"></script>
+</body>
 </html>

@@ -25,6 +25,7 @@
     "tabs",
     "contextMenus",
     "webRequest",
+    "storage",
     "<all_urls>"
   ]
 }
