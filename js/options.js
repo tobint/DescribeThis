@@ -28,13 +28,13 @@ function storageGetComplete(settings) {
         document.getElementById("emotionApiRegion").value = settings.emotionApiRegion;
         document.getElementById("emotionApiKey").value = settings.emotionApiKey;
 
-        setDisplay(displayType.success, "Settings retrieved");
+        setDisplay(MessageType.success, "Settings retrieved");
     }
 }
 
 function displayGetError(settings) {
     var error = browser.runtime.lastError;
-    setDisplay(displayType.error, "Unable to get settings: " + error);
+    setDisplay(MessageType.error, "Unable to get settings: " + error);
 }
 
 function saveOptions(event) {
@@ -61,11 +61,11 @@ function storageSetComplete() {
 }
 
 function displaySaveError(error) {
-    setDisplay(displayType.error, "Unable to save settings: " + error);
+    setDisplay(MessageType.error, "Unable to save settings: " + error);
 }
 
 function displaySaveSuccess() {
-    setDisplay(displayType.success, "Settings saved");
+    setDisplay(MessageType.success, "Settings saved");
 
 }
 
@@ -75,13 +75,13 @@ function setDisplay(dispType, text) {
     infoBox.innerHTML = text;
 
     switch (dispType) {
-        case displayType.error:
+        case MessageType.error:
             infoBox.className = "infoBoxError";
             break; 
-        case displayType.information:
+        case MessageType.information:
             infoBox.className = "infoBoxInformation";
             break;
-        case displayType.success:
+        case MessageType.success:
             infoBox.className = "infoBoxSuccess";
             break;
         default:

@@ -83,11 +83,11 @@ function displayText(status, text) {
 };
 
 function displayFailure(text) {
-    displayText(displayType.error, text);
+    displayText(MessageType.error, text);
 };
 
 function displaySuccess(text) {
-    displayText(displayType.success, text);
+    displayText(MessageType.success, text);
 };
 
 function formatResult(obj) {
