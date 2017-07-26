@@ -16,7 +16,7 @@
       "js/params.js",
       "js/storage.js",
       "js/cognitive.js",
-      "js/extension",
+      "js/extension.js",
       "js/background.js"
     ],
     "persistent": true
