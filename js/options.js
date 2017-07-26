@@ -30,11 +30,14 @@ function storageGetComplete(settings) {
         document.getElementById("visionApiKey").value = settings.visionApiKey;
         document.getElementById("emotionApiRegion").value = settings.emotionApiRegion;
         document.getElementById("emotionApiKey").value = settings.emotionApiKey;
+
+        setDisplay(displayType.success, "Settings retrieved");
     }
 }
 
 function displayGetError(settings) {
-    console.log("Error getting settings.");
+    var error = browser.runtime.lastError;
+    setDisplay(displayType.error, "Unable to get settings: " + error);
 }
 
 function saveOptions(event) {
