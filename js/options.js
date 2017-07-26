@@ -1,7 +1,7 @@
-var Reporter = {
+var OptionController = {
     "abandon": function (message) { displayGetError(message); }
 }
-var _Storage = ExtensionStorage(Reporter);
+var _Storage = ExtensionStorage(OptionController);
 var _Options = null;
 
 function load(event) {
