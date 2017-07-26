@@ -1,23 +1,24 @@
 {
-  "name": "Describe This",
+  "name": "DescribeThis!",
   "description": "Adds descriptive text to photos on the web using Microsoft Cognitive Services",
   "version": "1.0",
   "locale": "en",
   "default_locale": "en",
   "author": "Tobin Titus",
   "icons": {
-    "24": "image/extension_icon_24.png",
-    "48": "image/extension_icon_48.png"
+    "16": "image/describe_icon_16.png",
+    "24": "image/describe_icon_24.png",
+    "48": "image/describe_icon_48.png"
   },
   "background": {
     "scripts":  ["js/background.js"],
     "persistent": true
   },
   "browser_action": {
-    "default_title": "Describe This",
+    "default_title": "DescribeThis!",
     "default_icon": {
-      "20": "image/browseraction_icon_20.png",
-      "40": "image/browseraction_icon_40.png"
+      "20": "image/browseraction_describe_icon_20.png",
+      "40": "image/browseraction_describe_icon_40.png"
     }
   },
   "options_page": "html/options.html",
