@@ -1,25 +1,21 @@
-var displayType = {
-    error: 1,
-    information: 2,
-    success: 3
-};
+var Reporter = {
+    "abandon": function (message) { displayGetError(message); }
+}
+var _Storage = ExtensionStorage(Reporter);
+var _Options = null;
 
 function load(event) {
+    _Storage.getAllOptionSettings(storageGetComplete);
+
     document.getElementById("saveOptions").addEventListener("click", saveOptions, false);
-    getOptions();
+
 }
 
-function getOptions() {
-    let settings = browser.storage.sync.get(
-        {
-            "visionApiRegion": "westcentralus",
-            "visionApiKey": "",
-            "emotionApiRegion": "westus",
-            "emotionApiKey": ""
-        }, storageGetComplete);
-}
 
 function storageGetComplete(settings) {
+    // Save global settings
+    _Options = settings;
+
     var error = browser.runtime.lastError;
 
     if (error) {
@@ -42,15 +38,15 @@ function displayGetError(settings) {
 }
 
 function saveOptions(event) {
-    let setting = browser.storage.sync.set(
-        {
-            /* Cognitive Services Settings */
-            "visionApiRegion": document.getElementById("visionApiRegion").value,
-            "visionApiKey": document.getElementById("visionApiKey").value,
-            "emotionApiRegion": document.getElementById("emotionApiRegion").value,
-            "emotionApiKey": document.getElementById("emotionApiKey").value,
+    let settings = {
+        /* Cognitive Services Settings */
+        "visionApiRegion": document.getElementById("visionApiRegion").value,
+        "visionApiKey": document.getElementById("visionApiKey").value,
+        "emotionApiRegion": document.getElementById("emotionApiRegion").value,
+        "emotionApiKey": document.getElementById("emotionApiKey").value,
 
-        }, storageSetComplete);
+    };
+    _Storage.setAllOptionSettings(settings, storageSetComplete);
 }
 
 function storageSetComplete() {
