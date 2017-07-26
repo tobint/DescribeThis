@@ -1,3 +1,5 @@
+var options = null;
+
 function callCognitiveService(apiUrl, subscriptionKey, sourceImageUrl, callback) {
     var returnValue = "";
     var xhr = new XMLHttpRequest();
@@ -20,9 +22,8 @@ function callCognitiveService(apiUrl, subscriptionKey, sourceImageUrl, callback)
 }
 
 function callCognitiveServiceAnalyze(sourceImageUrl) {
-    // Replace the subscriptionKey string value with your valid subscription key.
-    var subscriptionKey = ""; // TODO: Add to options page
-    var uriBase = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/analyze?";
+    var subscriptionKey = options.visionApiKey;
+    var uriBase = "https://" + options.visionApiRegion + ".api.cognitive.microsoft.com/vision/v1.0/analyze?";
     var url = uriBase + "visualFeatures=Categories%2CDescription&language=en"; // TODO: Add to options page
 
 
@@ -34,8 +35,8 @@ function callCognitiveServiceAnalyze(sourceImageUrl) {
 }
 
 function callCognitiveServiceEmotion(sourceImageUrl) {
-    var subscriptionKey = "";
-    var uriBase = "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?";
+    var subscriptionKey = options.emotionApiKey;
+    var uriBase = "https://" + options.emotionApiRegion + ".api.cognitive.microsoft.com/emotion/v1.0/recognize?";
     var url = uriBase;
 
     return callCognitiveService(url, subscriptionKey, sourceImageUrl,
@@ -92,17 +93,53 @@ function hasPersonTag(tags) {
     return hasPerson;
 }
 
+
+function getOptions() {
+    let settings = browser.storage.sync.get(
+        [
+            "visionApiRegion",
+            "visionApiKey",
+            "emotionApiRegion",
+            "emotionApiKey"
+        ], getOptionsCallback);
+}
+
+function getOptionsCallback(settings) {
+    if (settings.visionApiKey == null) {
+        alert("set options first");
+    } else {
+        options = settings;
+    }
+}
+
+function displayText(status, text) {
+    alert(text); // TODO: Change this.
+}
+
+function displayFailure(text) {
+    displayText(null, "Failure: " + text);
+}
+
+function displaySuccess(text) {
+    displayText(null, text);
+}
+
 browser.contextMenus.create({
     id: "describe-this",
-    title: "Describe This!",
+    title: "DescribeThis!",
     contexts: ["image"]
 });
 
 browser.contextMenus.onClicked.addListener(function (info, tab) {
     if (info.menuItemId == "describe-this") {
         if (info.srcUrl) {
-            alert(processImage(info.srcUrl));
+            if (info.srcUrl.slice(0, 5) == "data:") {
+                displayFailure("Cannot analyze dataUri images.");
+            } else {
+                displaySuccess(processImage(info.srcUrl));
+            }
         }
     }
 });
 
+if (options == null) { getOptions(); }

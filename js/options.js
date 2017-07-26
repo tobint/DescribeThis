@@ -11,11 +11,12 @@ function load(event) {
 
 function getOptions() {
     let settings = browser.storage.sync.get(
-        [   "visionApiRegion",
-            "visionApiKey",
-            "emotionApiRegion",
-            "emotionApiKey"
-        ], storageGetComplete);
+        {
+            "visionApiRegion": "westcentralus",
+            "visionApiKey": "",
+            "emotionApiRegion": "westus",
+            "emotionApiKey": ""
+        }, storageGetComplete);
 }
 
 function storageGetComplete(settings) {
