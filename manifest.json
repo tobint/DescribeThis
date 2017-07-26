@@ -11,7 +11,7 @@
     "48": "image/extension_icon_48.png"
   },
   "background": {
-    "scripts":  ["js/message.js", "js/params.js", "js/storage.js", "js/cognitive.js", "js/background.js"],
+    "scripts":  ["js/message.js", "js/params.js", "js/storage.js", "js/cognitive.js", "js/extension", "js/background.js"],
     "persistent": true
   },
   "browser_action": {
