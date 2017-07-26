@@ -1,10 +1,12 @@
-var ParamEcoder = (function() {
+/* Type:        ParamEcoder
+ * Description: Parameter-encodes objects for use in URIs
+ */
+var ParamEcoder = (function () {
 
     /*
      * Credit: David Shapiro on Github https://gist.github.com/dgs700
      * GIST: https://gist.github.com/dgs700/4677933
      */
-
     var objectToQueryString = function (a) {
         var prefix, s, add, name, r20, output;
         s = [];

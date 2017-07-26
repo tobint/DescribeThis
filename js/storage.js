@@ -1,4 +1,4 @@
-/* Class:       ExtensionStorage
+/* Type:        ExtensionStorage
  * Description: Encapsulates storage control for the extension
  * Params:
  *              # controller - Any object with an 'abandon' function taking a single string argument
