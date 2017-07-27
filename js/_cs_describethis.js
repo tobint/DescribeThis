@@ -2,7 +2,9 @@ var images = document.images;
 
 for (var image in images) {
     images[image].addEventListener("mouseover", function (e) {  
-        browser.runtime.sendMessage(e.currentTarget.src);
+        var rand = "ds_" + (Math.random().toString(36).substr(2, 6));
+        e.currentTarget.classList.add(rand);
+        browser.runtime.sendMessage({ "id": rand, "src": e.currentTarget.src });
     }, false);
 }
 

@@ -2,16 +2,16 @@ _Extension = Extension();
 _Extension.setup();
 
 
-function displayText(status, text) {
+function displayText(id, status, text) {
     console.log(text); // TODO: Change this to display over the image.
 };
 
-function displayFailure(text) {
-    displayText(MessageType.error, text);
+function displayFailure(id, text) {
+    displayText(id, MessageType.error, text);
 };
 
-function displaySuccess(text) {
-    displayText(MessageType.success, text);
+function displaySuccess(id, text) {
+    displayText(id, MessageType.success, text);
 };
 
 function formatResult(obj) {
@@ -23,13 +23,13 @@ function formatResult(obj) {
     return result;
 }
 
-function handleSrc(srcUrl) {
-    if (srcUrl) {
-        if (srcUrl.slice(0, 5) == "data:") {
-            displayFailure("Cannot analyze dataUri images."); // TODO: Localize this
+function handleSrc(message) {
+    if (message.src) {
+        if (message.src.slice(0, 5) == "data:") {
+            displayFailure(message.id, "Cannot analyze dataUri images."); // TODO: Localize this
         } else {
-            _Extension.processImage(srcUrl, function (obj) {
-                displaySuccess(formatResult(obj));
+            _Extension.processImage(message.src, function (obj) {
+                displaySuccess(message.tabId, formatResult(obj));
             });
         }
     }
@@ -42,11 +42,23 @@ browser.contextMenus.create({
 });
 
 browser.contextMenus.onClicked.addListener(function (info, tab) {
+    var tabId = null;
+    if (tab) { tabId = tab.id;}
+
     if (info.menuItemId == "describe-this") {
-        handleSrc(info.srcUrl);
+        handleSrc({ "tabId": tabId, "src": info.srcUrl });
     }
 });
 
-browser.runtime.onMessage.addListener(function(message) {
-    handleSrc(message);
+browser.runtime.onMessage.addListener(function (message) {
+    var gettingTab = browser.tabs.getCurrent(function (tab) {
+        var tabId = null;
+        if (tab) {
+            tabId = tab.id;
+            console.log("Found a tabId! ${tabId}");
+        }
+        message.tabId = tabId;
+        handleSrc(message);
+    });
+
 });
