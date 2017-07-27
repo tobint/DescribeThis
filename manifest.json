@@ -21,6 +21,12 @@
     ],
     "persistent": true
   },
+  "content_scripts": [
+    {
+      "matches": [ "<all_urls>" ],
+      "js":  ["js/_cs_describethis.js"]
+    }
+  ],
   "browser_action": {
     "default_title": "DescribeThis!",
     "default_icon": {

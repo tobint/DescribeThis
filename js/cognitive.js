@@ -1,6 +1,7 @@
 // ParamEncoder - Requires params.js for
-function CognitiveServices(options) {
+function CognitiveServices(controller, options) {
     var _Options = options;
+    var _Controller = controller;
 
     function _hasPersonTag(tags) {
         var hasPerson = false;
@@ -16,27 +17,24 @@ function CognitiveServices(options) {
     }
 
     function _call(apiUrl, subscriptionKey, sourceImageUrl, callback) {
-        var returnValue = "";
         var xhr = new XMLHttpRequest();
         xhr.addEventListener("readystatechange",
             function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    returnValue = callback(this.response);
+                    callback(this.response);
                 }
             }, false);
         try {
-            xhr.open('POST', apiUrl, false);
+            xhr.open('POST', apiUrl, true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
             xhr.send('{"url": ' + '"' + sourceImageUrl + '"}');
         } catch (err) {
-            returnValue = "DescribeThis! was unable to call Microsoft Cognitive Services API: " + err; // TODO: Localize
+            _Controller.abandon("DescribeThis! was unable to call Microsoft Cognitive Services API: " + err); // TODO: Localize
         }
-
-        return returnValue;
     };
 
-    function VisionAnalyze(sourceImageUrl) {
+    function VisionAnalyze(sourceImageUrl, callback) {
         var params = {
             "visualFeatures": "Categories,Description",
             "language": "en"
@@ -46,23 +44,23 @@ function CognitiveServices(options) {
         var uriBase = "https://" + _Options.visionApiRegion + ".api.cognitive.microsoft.com/vision/v1.0/analyze?";
         var url = uriBase + ParamEcoder.toQueryString(params); 
 
-        return _call(url, subscriptionKey, sourceImageUrl,
+        _call(url, subscriptionKey, sourceImageUrl,
             function (response) {
                 var retObj = JSON.parse(response);
                 retObj.hasPerson = _hasPersonTag(retObj.description.tags);
-                return retObj;
+                callback(retObj);
             }
         );
     };
 
-    function EmotionRecognize(sourceImageUrl) {
+    function EmotionRecognize(sourceImageUrl, callback) {
         var subscriptionKey = _Options.emotionApiKey;
         var uriBase = "https://" + _Options.emotionApiRegion + ".api.cognitive.microsoft.com/emotion/v1.0/recognize?";
         var url = uriBase;
 
         return _call(url, subscriptionKey, sourceImageUrl,
             function (response) {
-                return JSON.parse(response);
+                callback(JSON.parse(response));
             }
         );
     };

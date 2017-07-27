@@ -3,7 +3,7 @@ _Extension.setup();
 
 
 function displayText(status, text) {
-    alert(text); // TODO: Change this to display over the image.
+    console.log(text); // TODO: Change this to display over the image.
 };
 
 function displayFailure(text) {
@@ -23,6 +23,18 @@ function formatResult(obj) {
     return result;
 }
 
+function handleSrc(srcUrl) {
+    if (srcUrl) {
+        if (srcUrl.slice(0, 5) == "data:") {
+            displayFailure("Cannot analyze dataUri images."); // TODO: Localize this
+        } else {
+            _Extension.processImage(srcUrl, function (obj) {
+                displaySuccess(formatResult(obj));
+            });
+        }
+    }
+}
+
 browser.contextMenus.create({
     id: "describe-this",
     title: "DescribeThis!",
@@ -31,12 +43,10 @@ browser.contextMenus.create({
 
 browser.contextMenus.onClicked.addListener(function (info, tab) {
     if (info.menuItemId == "describe-this") {
-        if (info.srcUrl) {
-            if (info.srcUrl.slice(0, 5) == "data:") {
-                displayFailure("Cannot analyze dataUri images."); // TODO: Localize this
-            } else {
-                displaySuccess(formatResult(_Extension.processImage(info.srcUrl)));
-            }
-        }
+        handleSrc(info.srcUrl);
     }
+});
+
+browser.runtime.onMessage.addListener(function(message) {
+    handleSrc(message);
 });
